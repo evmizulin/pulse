@@ -1,5 +1,5 @@
 import React, { useCallback, useReducer, useState, useEffect, useMemo } from 'react'
-import { reducer, initialState, onLengthChangeAction, onCellClickAction } from './reducer'
+import { reducer, initialState, onLengthChangeAction, onCellClickAction, onSignatureChangeAction } from './reducer'
 import { onPlayNextAction } from './reducer'
 
 import cn from './App.module.scss'
@@ -8,11 +8,17 @@ const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [playing, setPlaying] = useState(false)
   const [temp, setTemp] = useState(150)
+  const [signature, setSignature] = useState('')
 
   const onTempChangeHandler = useCallback((event) => {
     const value = +event.target.value
     if (Number.isNaN(value) || value < 0) return
     setTemp(Math.round(value))
+  }, [])
+
+  const onSignatureChangeHandler = useCallback((event) => {
+    const value = event.target.value;
+    dispatch(onSignatureChangeAction({ value }))
   }, [])
 
   const onDoubleTempHandler = useCallback((event) => {
@@ -101,6 +107,13 @@ const App = () => {
             <button onClick={onHalfTempHandler}>/2</button>
           </div>
         </div>
+        <div className={cn.input}>
+          <div>Рисунок</div>
+          <div>
+            <input type="text" value={`${state.signature}`} onChange={onSignatureChangeHandler}/>
+          </div>
+        </div>
+
         <div className={cn.button}>
           <button onClick={onPlayClick}>Play</button>
           <button onClick={onStopClick}>Pause</button>

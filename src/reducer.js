@@ -2,6 +2,7 @@ import { audios } from './audios'
 
 export const initialState = {
   playRow: 0,
+  signature: '',
   track: Array(8)
     .fill(null)
     .map((item) => Array(3).fill(false)),
@@ -9,29 +10,79 @@ export const initialState = {
 
 const onLengthChange = (state, action) => {
   const { length } = action.payload
+  const newTrack = Array(length)
+    .fill(null)
+    .map((item, index) => {
+      return state.track[index] || Array(3).fill(false)
+    })
 
   return {
     ...state,
-    track: Array(length)
-      .fill(null)
-      .map((item, index) => {
-        return state.track[index] || Array(3).fill(false)
-      }),
+    track: newTrack,
+    signature: trackToSignature(newTrack)
+  }
+}
+
+function trackToSignature(track) {
+  let signature = ''
+  track.forEach(function(element) {
+    if (element[0]) signature += 'B'
+    else if (element[1]) signature += 't'
+    else if (element[2]) signature += 'S'
+  })
+  return signature
+}
+
+function signatureToTrack(normalizedSignature) {
+  return Array(normalizedSignature.length)
+    .fill(null)
+    .map((item, index) => {
+      const row = Array(3).fill(false)
+      switch (normalizedSignature[index]) {
+        case 'b':
+          row[0] = true
+          break
+        case 't':
+          row[1] = true
+          break
+        case 's':
+          row[2] = true
+          break
+        default:
+          break
+      }
+      return row
+    })
+}
+
+const onSignatureChange = (state, action) => {
+  const signature = action.payload.signature.value
+  const normalizedSignature = signature.toLowerCase().replace(/\s/g, '')
+
+  const newTrack = signatureToTrack(normalizedSignature)
+
+  return {
+    ...state,
+    signature: signature,
+    track: newTrack,
   }
 }
 
 const onCellClick = (state, action) => {
   const { rowIndex, cellIndex } = action.payload
 
+  const newTrack = state.track.map((item, index) => {
+    return rowIndex !== index
+      ? item
+      : item.map((item, index) => {
+        return index !== cellIndex ? false : !item
+      })
+  })
+
   return {
     ...state,
-    track: state.track.map((item, index) => {
-      return rowIndex !== index
-        ? item
-        : item.map((item, index) => {
-            return index !== cellIndex ? false : !item
-          })
-    }),
+    track: newTrack,
+    signature: trackToSignature(newTrack)
   }
 }
 
@@ -62,8 +113,9 @@ const onPlayNext = (state, action) => {
 
 const MAP = {
   onLengthChange,
-  onCellClick: onCellClick,
+  onCellClick,
   onPlayNext,
+  onSignatureChange,
 }
 
 export const reducer = (state, action) => {
@@ -74,6 +126,13 @@ export const onLengthChangeAction = (length) => ({
   type: 'onLengthChange',
   payload: {
     length,
+  },
+})
+
+export const onSignatureChangeAction = (signature) => ({
+  type: 'onSignatureChange',
+  payload: {
+    signature,
   },
 })
 
