@@ -2,6 +2,7 @@
   "name": "rhythm",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://evmizulin.github.io/pulse",
   "dependencies": {
     "node-sass": "^4.13.0",
     "prettier": "^1.19.1",
