@@ -15,6 +15,18 @@ const App = () => {
     setTemp(Math.round(value))
   }, [])
 
+  const onDoubleTempHandler = useCallback((event) => {
+    const value = temp * 2
+    if (Number.isNaN(value) || value < 0) return
+    setTemp(Math.round(value))
+  }, [temp])
+
+  const onHalfTempHandler = useCallback((event) => {
+    const value = temp / 2
+    if (Number.isNaN(value) || value < 0) return
+    setTemp(Math.round(value))
+  }, [temp])
+
   const onLengthChangeHandler = useCallback((event) => {
     const value = +event.target.value
     if (Number.isNaN(value) || value < 0) return
@@ -78,13 +90,15 @@ const App = () => {
         <div className={cn.input}>
           <div>Размер</div>
           <div>
-            <input type="text" value={`${state.track.length}`} onChange={onLengthChangeHandler} />
+            <input type="text" value={`${state.track.length}`} onChange={onLengthChangeHandler}/>
           </div>
         </div>
         <div className={cn.input}>
           <div>Темп</div>
           <div>
-            <input type="text" value={`${temp}`} onChange={onTempChangeHandler} />
+            <input type="text" value={`${temp}`} onChange={onTempChangeHandler}/>
+            <button onClick={onDoubleTempHandler}>x2</button>
+            <button onClick={onHalfTempHandler}>/2</button>
           </div>
         </div>
         <div className={cn.button}>
