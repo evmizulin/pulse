@@ -20,8 +20,8 @@ const onLengthChange = (state, action) => {
   }
 }
 
-const onCeilClick = (state, action) => {
-  const { rowIndex, ceilIndex } = action.payload
+const onCellClick = (state, action) => {
+  const { rowIndex, cellIndex } = action.payload
 
   return {
     ...state,
@@ -29,7 +29,7 @@ const onCeilClick = (state, action) => {
       return rowIndex !== index
         ? item
         : item.map((item, index) => {
-            return index !== ceilIndex ? false : !item
+            return index !== cellIndex ? false : !item
           })
     }),
   }
@@ -47,11 +47,11 @@ const onPlayNext = (state, action) => {
   //   audio.currentTime = 0
   // })
 
-  const ceilIndex = track[realPlayRow].findIndex((item) => item)
+  const cellIndex = track[realPlayRow].findIndex((item) => item)
 
-  if (ceilIndex > -1) {
-    audios[ceilIndex].currentTime = 0
-    audios[ceilIndex].play()
+  if (cellIndex > -1) {
+    audios[cellIndex].currentTime = 0
+    audios[cellIndex].play()
   }
 
   return {
@@ -62,7 +62,7 @@ const onPlayNext = (state, action) => {
 
 const MAP = {
   onLengthChange,
-  onCeilClick,
+  onCellClick: onCellClick,
   onPlayNext,
 }
 
@@ -77,11 +77,11 @@ export const onLengthChangeAction = (length) => ({
   },
 })
 
-export const onCeilClickAction = ({ rowIndex, ceilIndex }) => ({
-  type: 'onCeilClick',
+export const onCellClickAction = ({ rowIndex, cellIndex }) => ({
+  type: 'onCellClick',
   payload: {
     rowIndex,
-    ceilIndex,
+    cellIndex,
   },
 })
 

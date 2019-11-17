@@ -1,5 +1,5 @@
 import React, { useCallback, useReducer, useState, useEffect, useMemo } from 'react'
-import { reducer, initialState, onLengthChangeAction, onCeilClickAction } from './reducer'
+import { reducer, initialState, onLengthChangeAction, onCellClickAction } from './reducer'
 import { onPlayNextAction } from './reducer'
 
 import cn from './App.module.scss'
@@ -21,10 +21,10 @@ const App = () => {
     dispatch(onLengthChangeAction(Math.round(value)))
   }, [])
 
-  const onCeilClickHandler = useCallback((event) => {
+  const onCellClickHandler = useCallback((event) => {
     const rowIndex = +event.target.getAttribute('data-row-index')
-    const ceilIndex = +event.target.getAttribute('data-ceil-index')
-    dispatch(onCeilClickAction({ rowIndex, ceilIndex }))
+    const cellIndex = +event.target.getAttribute('data-cell-index')
+    dispatch(onCellClickAction({ rowIndex, cellIndex }))
   }, [])
 
   const onPlayClick = useCallback(() => {
@@ -61,13 +61,13 @@ const App = () => {
           {state.track.map((row, rowIndex) => (
             <div className={`${cn.row} ${rowIndex === activeRowIndex ? cn.active : ''}`} key={rowIndex}>
               <div className={cn.anotation}>{rowIndex + 1}</div>
-              {row.map((item, ceilIndex) => (
+              {row.map((item, cellIndex) => (
                 <div
                   data-row-index={rowIndex}
-                  data-ceil-index={ceilIndex}
-                  key={ceilIndex}
-                  className={`${item ? cn.active : ''} ${cn.ceil}`}
-                  onClick={onCeilClickHandler}
+                  data-cell-index={cellIndex}
+                  key={cellIndex}
+                  className={`${item ? cn.active : ''} ${cn.cell}`}
+                  onClick={onCellClickHandler}
                 ></div>
               ))}
             </div>
