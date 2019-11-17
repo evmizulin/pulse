@@ -1,12 +1,21 @@
 import { audios } from './audios'
 
-export const initialState = {
-  playRow: 0,
-  signature: '',
-  track: Array(8)
-    .fill(null)
-    .map((item) => Array(3).fill(false)),
-}
+const query = window.location.search.substr(1)
+
+export const initialState =
+  !query ?
+    {
+      playRow: 0,
+      signature: '--------',
+      track: Array(8)
+        .fill(null)
+        .map((item) => Array(3).fill(false)),
+    } :
+    {
+      playRow: 0,
+      signature: query,
+      track: signatureToTrack(query),
+    }
 
 const onLengthChange = (state, action) => {
   const { length } = action.payload
@@ -19,21 +28,23 @@ const onLengthChange = (state, action) => {
   return {
     ...state,
     track: newTrack,
-    signature: trackToSignature(newTrack)
+    signature: trackToSignature(newTrack),
   }
 }
 
 function trackToSignature(track) {
   let signature = ''
-  track.forEach(function(element) {
-    if (element[0]) signature += 'B'
-    else if (element[1]) signature += 't'
-    else if (element[2]) signature += 'S'
+  track.forEach(function(row) {
+    if (row[0]) signature += 'B'
+    else if (row[1]) signature += 't'
+    else if (row[2]) signature += 'S'
+    else signature += '-'
   })
   return signature
 }
 
-function signatureToTrack(normalizedSignature) {
+function signatureToTrack(signature) {
+  const normalizedSignature = signature.toLowerCase().replace(/\s/g, '')
   return Array(normalizedSignature.length)
     .fill(null)
     .map((item, index) => {
@@ -57,9 +68,8 @@ function signatureToTrack(normalizedSignature) {
 
 const onSignatureChange = (state, action) => {
   const signature = action.payload.signature.value
-  const normalizedSignature = signature.toLowerCase().replace(/\s/g, '')
 
-  const newTrack = signatureToTrack(normalizedSignature)
+  const newTrack = signatureToTrack(signature)
 
   return {
     ...state,
@@ -82,7 +92,7 @@ const onCellClick = (state, action) => {
   return {
     ...state,
     track: newTrack,
-    signature: trackToSignature(newTrack)
+    signature: trackToSignature(newTrack),
   }
 }
 
