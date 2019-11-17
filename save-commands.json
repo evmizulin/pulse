@@ -1,0 +1,6 @@
+{
+    "commands": [
+        "**/*.js : ./node_modules/.bin/prettier --write {absPath}{filename}",
+        "**/*.scss : ./node_modules/.bin/prettier --write {absPath}{filename}"
+    ]
+}
