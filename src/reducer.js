@@ -2,7 +2,7 @@ import { audios } from './audios'
 
 export const initialState = {
   playRow: 0,
-  track: Array(4)
+  track: Array(8)
     .fill(null)
     .map((item) => Array(3).fill(false)),
 }
@@ -42,14 +42,15 @@ const onPlayNext = (state, action) => {
 
   const realPlayRow = track[playRow] ? playRow : 0
 
-  audios.forEach((audio) => {
-    audio.pause()
-    audio.currentTime = 0
-  })
+  // audios.forEach((audio) => {
+  //   audio.pause()
+  //   audio.currentTime = 0
+  // })
 
   const ceilIndex = track[realPlayRow].findIndex((item) => item)
 
   if (ceilIndex > -1) {
+    audios[ceilIndex].currentTime = 0
     audios[ceilIndex].play()
   }
 

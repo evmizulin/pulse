@@ -1,1 +1,1 @@
-export const audios = [new Audio('mp3/b.wav.mp3'), new Audio('mp3/t.wav.mp3'), new Audio('mp3/s.wav.mp3')]
+export const audios = [new Audio('mp3/b.mp3'), new Audio('mp3/t.mp3'), new Audio('mp3/s.mp3')]

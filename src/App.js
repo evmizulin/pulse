@@ -7,7 +7,7 @@ import cn from './App.module.scss'
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [playing, setPlaying] = useState(false)
-  const [temp, setTemp] = useState(60)
+  const [temp, setTemp] = useState(150)
 
   const onTempChangeHandler = useCallback((event) => {
     const value = +event.target.value
