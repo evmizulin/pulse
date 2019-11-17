@@ -98,6 +98,7 @@ const onCellClick = (state, action) => {
 
 const onPlayNext = (state, action) => {
   const { playRow, track } = state
+  const { instrument } = action.payload
 
   if (!track.length) return { ...state, playRow: 0 }
 
@@ -111,8 +112,9 @@ const onPlayNext = (state, action) => {
   const cellIndex = track[realPlayRow].findIndex((item) => item)
 
   if (cellIndex > -1) {
-    audios[cellIndex].currentTime = 0
-    audios[cellIndex].play()
+    let audio = audios[instrument][cellIndex]
+    audio.currentTime = 0
+    audio.play()
   }
 
   return {
@@ -154,7 +156,9 @@ export const onCellClickAction = ({ rowIndex, cellIndex }) => ({
   },
 })
 
-export const onPlayNextAction = () => ({
+export const onPlayNextAction = (instrument) => ({
   type: 'onPlayNext',
-  payload: {},
+  payload: {
+    instrument,
+  },
 })

@@ -3,12 +3,13 @@ import { reducer, initialState, onLengthChangeAction, onCellClickAction, onSigna
 import { onPlayNextAction } from './reducer'
 
 import cn from './App.module.scss'
+import { audios } from './audios'
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [playing, setPlaying] = useState(false)
   const [temp, setTemp] = useState(150)
-  const [signature, setSignature] = useState('')
+  const [instrument, setInstrument] = useState(Object.keys(audios)[0])
 
   const onTempChangeHandler = useCallback((event) => {
     const value = +event.target.value
@@ -16,8 +17,13 @@ const App = () => {
     setTemp(Math.round(value))
   }, [])
 
+  const onInstrumentChangeHandler = useCallback((event) => {
+    const value = event.target.value
+    setInstrument(value)
+  }, [])
+
   const onSignatureChangeHandler = useCallback((event) => {
-    const value = event.target.value;
+    const value = event.target.value
     dispatch(onSignatureChangeAction({ value }))
   }, [])
 
@@ -61,10 +67,10 @@ const App = () => {
   useEffect(() => {
     if (!playing) return
     const intervalId = setInterval(() => {
-      dispatch(onPlayNextAction())
+      dispatch(onPlayNextAction(instrument))
     }, 60000 / temp)
     return () => clearInterval(intervalId)
-  }, [temp, playing])
+  }, [temp, playing, instrument])
 
   return (
     <div className={cn.root}>
@@ -96,13 +102,13 @@ const App = () => {
         <div className={cn.input}>
           <div>Размер</div>
           <div>
-            <input type="text" value={`${state.track.length}`} onChange={onLengthChangeHandler}/>
+            <input type="text" value={state.track.length} onChange={onLengthChangeHandler}/>
           </div>
         </div>
         <div className={cn.input}>
           <div>Темп</div>
           <div>
-            <input type="text" value={`${temp}`} onChange={onTempChangeHandler}/>
+            <input type="text" value={temp} onChange={onTempChangeHandler}/>
             <button onClick={onDoubleTempHandler}>x2</button>
             <button onClick={onHalfTempHandler}>/2</button>
           </div>
@@ -110,9 +116,16 @@ const App = () => {
         <div className={cn.input}>
           <div>Рисунок</div>
           <div>
-            <input type="text" value={`${state.signature}`} onChange={onSignatureChangeHandler}/>
+            <input type="text" value={state.signature} onChange={onSignatureChangeHandler}/>
           </div>
         </div>
+
+        <div>Инструмент</div>
+        <select  className={cn.input} name="select" value={instrument} onChange={onInstrumentChangeHandler}>
+          {Object.keys(audios).map(name => {
+            return (<option key={name} value={name}>{name}</option>)
+          })}
+        </select>
 
         <div className={cn.button}>
           <button onClick={onPlayClick}>Play</button>
