@@ -1,6 +1,6 @@
 import { audios } from './audios'
 
-const query = window.location.search.substr(1)
+const query = decodeURI(window.location.search.substr(1))
 
 export const initialState =
   !query ?
