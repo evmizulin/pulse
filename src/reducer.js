@@ -2,16 +2,15 @@ import { audios } from './audios'
 
 const query = decodeURI(window.location.search.substr(1))
 
-export const initialState =
-  !query ?
-    {
+export const initialState = !query
+  ? {
       playRow: 0,
       signature: '--------',
       track: Array(8)
         .fill(null)
         .map((item) => Array(3).fill(false)),
-    } :
-    {
+    }
+  : {
       playRow: 0,
       signature: query,
       track: signatureToTrack(query),
@@ -85,8 +84,8 @@ const onCellClick = (state, action) => {
     return rowIndex !== index
       ? item
       : item.map((item, index) => {
-        return index !== cellIndex ? false : !item
-      })
+          return index !== cellIndex ? false : !item
+        })
   })
 
   return {

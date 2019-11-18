@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/pulse/static/css/main.cbd91e49.chunk.css",
-    "main.js": "/pulse/static/js/main.f14b7cfa.chunk.js",
-    "main.js.map": "/pulse/static/js/main.f14b7cfa.chunk.js.map",
+    "main.css": "/pulse/static/css/main.c506b282.chunk.css",
+    "main.js": "/pulse/static/js/main.91f378dd.chunk.js",
+    "main.js.map": "/pulse/static/js/main.91f378dd.chunk.js.map",
     "runtime-main.js": "/pulse/static/js/runtime-main.d3f72301.js",
     "runtime-main.js.map": "/pulse/static/js/runtime-main.d3f72301.js.map",
     "static/js/2.e0fbe25d.chunk.js": "/pulse/static/js/2.e0fbe25d.chunk.js",
     "static/js/2.e0fbe25d.chunk.js.map": "/pulse/static/js/2.e0fbe25d.chunk.js.map",
     "index.html": "/pulse/index.html",
-    "precache-manifest.6e17936529a266360dd649ae27cdf8ff.js": "/pulse/precache-manifest.6e17936529a266360dd649ae27cdf8ff.js",
+    "precache-manifest.380cf92699dd303cebf22ef8f69862fb.js": "/pulse/precache-manifest.380cf92699dd303cebf22ef8f69862fb.js",
     "service-worker.js": "/pulse/service-worker.js",
-    "static/css/main.cbd91e49.chunk.css.map": "/pulse/static/css/main.cbd91e49.chunk.css.map"
+    "static/css/main.c506b282.chunk.css.map": "/pulse/static/css/main.c506b282.chunk.css.map"
   },
   "entrypoints": [
     "static/js/runtime-main.d3f72301.js",
     "static/js/2.e0fbe25d.chunk.js",
-    "static/css/main.cbd91e49.chunk.css",
-    "static/js/main.f14b7cfa.chunk.js"
+    "static/css/main.c506b282.chunk.css",
+    "static/js/main.91f378dd.chunk.js"
   ]
 }

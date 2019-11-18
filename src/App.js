@@ -1,5 +1,11 @@
 import React, { useCallback, useReducer, useState, useEffect, useMemo } from 'react'
-import { reducer, initialState, onLengthChangeAction, onCellClickAction, onSignatureChangeAction } from './reducer'
+import {
+  reducer,
+  initialState,
+  onLengthChangeAction,
+  onCellClickAction,
+  onSignatureChangeAction,
+} from './reducer'
 import { onPlayNextAction } from './reducer'
 
 import cn from './App.module.scss'
@@ -27,17 +33,16 @@ const App = () => {
     dispatch(onSignatureChangeAction({ value }))
   }, [])
 
-  const onDoubleTempHandler = useCallback((event) => {
-    const value = temp * 2
-    if (Number.isNaN(value) || value < 0) return
-    setTemp(Math.round(value))
+  const onDoubleTempHandler = useCallback(() => {
+    setTemp(temp * 2)
   }, [temp])
 
-  const onHalfTempHandler = useCallback((event) => {
-    const value = temp / 2
-    if (Number.isNaN(value) || value < 0) return
-    setTemp(Math.round(value))
-  }, [temp])
+  const onHalfTempHandler = useCallback(
+    (event) => {
+      setTemp(temp / 2)
+    },
+    [temp]
+  )
 
   const onLengthChangeHandler = useCallback((event) => {
     const value = +event.target.value
@@ -102,13 +107,13 @@ const App = () => {
         <div className={cn.input}>
           <div>Размер</div>
           <div>
-            <input type="text" value={state.track.length} onChange={onLengthChangeHandler}/>
+            <input type="text" value={state.track.length} onChange={onLengthChangeHandler} />
           </div>
         </div>
         <div className={cn.input}>
           <div>Темп</div>
           <div>
-            <input type="text" value={temp} onChange={onTempChangeHandler}/>
+            <input type="text" value={temp} onChange={onTempChangeHandler} />
             <button onClick={onDoubleTempHandler}>x2</button>
             <button onClick={onHalfTempHandler}>/2</button>
           </div>
@@ -116,15 +121,17 @@ const App = () => {
         <div className={cn.input}>
           <div>Рисунок</div>
           <div>
-            <input type="text" value={state.signature} onChange={onSignatureChangeHandler}/>
+            <input type="text" value={state.signature} onChange={onSignatureChangeHandler} />
           </div>
         </div>
 
         <div>Инструмент</div>
-        <select  className={cn.input} name="select" value={instrument} onChange={onInstrumentChangeHandler}>
-          {Object.keys(audios).map(name => {
-            return (<option key={name} value={name}>{name}</option>)
-          })}
+        <select className={cn.input} name="select" value={instrument} onChange={onInstrumentChangeHandler}>
+          {Object.keys(audios).map((name) => (
+            <option key={name} value={name}>
+              {name}
+            </option>
+          ))}
         </select>
 
         <div className={cn.button}>
