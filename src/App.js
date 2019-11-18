@@ -11,6 +11,10 @@ import { onPlayNextAction } from './reducer'
 import cn from './App.module.scss'
 import { audios } from './audios'
 
+// These two lines are required for Safari to cache audio and play it without a lag
+const audioContextClass = window.AudioContext || window.webkitAudioContext
+const audioContext = audioContextClass ? new audioContextClass() : null
+
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [playing, setPlaying] = useState(false)
@@ -57,6 +61,15 @@ const App = () => {
   }, [])
 
   const onPlayClick = useCallback(() => {
+    // This is "play audio when user clicked" workaround to enable playing of particular
+    // Audio instances and being able to play them out of click context. Still buggy.
+    audios[instrument].forEach(audio => {
+      audio.volume = 0
+      audio.load()
+      audio.play()
+      audio.pause()
+    })
+
     setPlaying(true)
   }, [])
 

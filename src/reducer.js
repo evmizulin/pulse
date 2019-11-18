@@ -112,7 +112,8 @@ const onPlayNext = (state, action) => {
 
   if (cellIndex > -1) {
     let audio = audios[instrument][cellIndex]
-    audio.currentTime = 0
+    audio.volume = 1 // reset Audio volume after "silent" play in user click
+    audio.currentTime = 0 // reset Audio play time
     audio.play()
   }
 

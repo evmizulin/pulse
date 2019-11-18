@@ -2,6 +2,7 @@
  "name": "Djembe Pulse",
  "short_name": "Pulse",
  "display": "standalone",
+ "start_url": "/?",
  "icons": [
   {
    "src": "\/android-icon-36x36.png",
