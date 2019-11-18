@@ -23,12 +23,11 @@
       grid-template-columns: 1fr 1fr 1fr 1fr;
       padding: 0.25rem;
 
-      .anotation {
-        border: 1px solid #333;
+      .annotation {
         display: flex;
         align-items: center;
         justify-content: center;
-        height: calc(3rem - 2px);
+        height: calc(2rem - 2px);
       }
     }
 
@@ -38,13 +37,13 @@
       grid-gap: 0.5rem;
       grid-template-columns: 1fr 1fr 1fr 1fr;
       padding: 0.25rem;
+      border-radius: 6px;
 
       &.active {
-        background: #fcf;
+        background: #e5ffff;
       }
 
-      .anotation {
-        border: 1px solid #333;
+      .annotation {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -52,13 +51,24 @@
       }
 
       .cell {
+        border: 1px solid #ef6c00;
+        border-radius: 6px;
         height: 3rem;
         text-align: center;
-        cursor: pointer;
-        background: #ccc;
 
-        &.active {
-          background: #cfc;
+        &:hover {
+          box-shadow: 0 0 5px #ff9d3f;
+        }
+
+        .inner {
+          margin: 2px;
+          height: calc(3rem - 4px);
+          border-radius: 4px;
+          cursor: pointer;
+        }
+
+        &.active .inner {
+          background: #009688;
         }
       }
     }

@@ -41,7 +41,7 @@ const App = () => {
     (event) => {
       setTemp(temp / 2)
     },
-    [temp]
+    [temp],
   )
 
   const onLengthChangeHandler = useCallback((event) => {
@@ -82,22 +82,22 @@ const App = () => {
       <div>
         <div className={cn.table}>
           <div className={cn.header}>
-            <div className={cn.anotation}></div>
-            <div className={cn.anotation}>B</div>
-            <div className={cn.anotation}>t</div>
-            <div className={cn.anotation}>S</div>
+            <div className={cn.annotation}></div>
+            <div className={cn.annotation}>B</div>
+            <div className={cn.annotation}>t</div>
+            <div className={cn.annotation}>S</div>
           </div>
           {state.track.map((row, rowIndex) => (
             <div className={`${cn.row} ${rowIndex === activeRowIndex ? cn.active : ''}`} key={rowIndex}>
-              <div className={cn.anotation}>{rowIndex + 1}</div>
+              <div className={cn.annotation}>{rowIndex + 1}</div>
               {row.map((item, cellIndex) => (
-                <div
-                  data-row-index={rowIndex}
-                  data-cell-index={cellIndex}
-                  key={cellIndex}
-                  className={`${item ? cn.active : ''} ${cn.cell}`}
-                  onClick={onCellClickHandler}
-                ></div>
+                <div key={cellIndex} className={`${item ? cn.active : cn.inactive} ${cn.cell}`}>
+                  <div
+                    data-row-index={rowIndex}
+                    data-cell-index={cellIndex}
+                    className={cn.inner}
+                    onClick={onCellClickHandler}/>
+                </div>
               ))}
             </div>
           ))}
@@ -107,13 +107,13 @@ const App = () => {
         <div className={cn.input}>
           <div>Размер</div>
           <div>
-            <input type="text" value={state.track.length} onChange={onLengthChangeHandler} />
+            <input type="text" value={state.track.length} onChange={onLengthChangeHandler}/>
           </div>
         </div>
         <div className={cn.input}>
           <div>Темп</div>
           <div>
-            <input type="text" value={temp} onChange={onTempChangeHandler} />
+            <input type="text" value={temp} onChange={onTempChangeHandler}/>
             <button onClick={onDoubleTempHandler}>x2</button>
             <button onClick={onHalfTempHandler}>/2</button>
           </div>
@@ -121,7 +121,7 @@ const App = () => {
         <div className={cn.input}>
           <div>Рисунок</div>
           <div>
-            <input type="text" value={state.signature} onChange={onSignatureChangeHandler} />
+            <input type="text" value={state.signature} onChange={onSignatureChangeHandler}/>
           </div>
         </div>
 
