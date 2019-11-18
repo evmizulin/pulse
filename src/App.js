@@ -1,4 +1,17 @@
-import React, { useCallback, useReducer, useState, useEffect, useMemo } from 'react'
+import React, { useCallback, useReducer, useState, useEffect, useMemo, useRef } from 'react'
+import {
+  Grid,
+  Button,
+  Fab,
+  Icon,
+  TextField,
+  Box,
+  InputLabel,
+  InputAdornment,
+  FormControl,
+  Select,
+} from '@material-ui/core'
+
 import {
   reducer,
   initialState,
@@ -60,8 +73,8 @@ const App = () => {
     const cellIndex = +event.target.getAttribute('data-cell-index')
     dispatch(onCellClickAction({ rowIndex, cellIndex }))
   }, [])
-
-  const onPlayClick = useCallback(() => {
+  
+  const onTogglePlayClick = useCallback(() => {
     // This is "play audio when user clicked" workaround to enable playing of particular
     // Audio instances and being able to play them out of click context. Still buggy.
     audios[instrument].forEach(audio => {
@@ -70,14 +83,9 @@ const App = () => {
       audio.play()
       audio.pause()
     })
-
-    setPlaying(true)
-  }, [instrument])
-
-  const onStopClick = useCallback(() => {
-    setPlaying(false)
-  }, [])
-
+    setPlaying(!playing)
+  }, [playing, instrument])
+  
   const activeRowIndex = useMemo(() => {
     if (!playing) return null
     return state.playRow === 0 ? state.track.length - 1 : state.playRow - 1
@@ -91,9 +99,56 @@ const App = () => {
     return () => clearInterval(intervalId)
   }, [temp, playing, instrument])
 
+  // Input label width retrieval for instrument dropdown
+  const inputLabel = useRef(null)
+  const [labelWidth, setLabelWidth] = useState(0)
+  useEffect(() => {
+    setLabelWidth(inputLabel.current.offsetWidth)
+  }, [])
+
   return (
-    <div className={cn.root}>
-      <div>
+    <Grid container component="main" className={cn.root} spacing={2}>
+
+      <Grid item xs={12}>
+        <TextField value={state.track.length}
+                   label="Размер" margin="normal" variant="outlined" style={{ width: '5rem' }}
+                   onChange={onLengthChangeHandler}/>&nbsp;
+        <TextField value={temp}
+                   label="Темп" margin="normal" variant="outlined" style={{ width: '10rem' }}
+                   InputProps={{
+                     endAdornment: <InputAdornment position="end">
+                       <Fab style={{ maxWidth: '2rem', maxHeight: '2rem', minWidth: '2rem', minHeight: '2rem' }}
+                            onClick={onDoubleTempHandler}>x2</Fab>
+                       <Fab style={{ maxWidth: '2rem', maxHeight: '2rem', minWidth: '2rem', minHeight: '2rem' }}
+                            onClick={onHalfTempHandler}>/2</Fab>
+                     </InputAdornment>,
+                   }}
+                   onChange={onTempChangeHandler}/>&nbsp;
+        <FormControl margin="normal" variant="outlined" style={{ width: '10rem' }}>
+          <InputLabel ref={inputLabel} htmlFor="instrument-select">Инструмент</InputLabel>
+          <Select value={instrument} native labelWidth={labelWidth}
+                  onChange={onInstrumentChangeHandler}
+                  inputProps={{
+                    id: 'instrument-select',
+                  }}>
+            {Object.keys(audios).map(name => {
+              return (<option key={name} value={name}>{name}</option>)
+            })}
+          </Select>
+        </FormControl>&nbsp;
+        <FormControl margin="normal" variant="outlined">
+          <Button variant="contained" size="large" onClick={onTogglePlayClick}
+                  endIcon={<Icon>{playing ? 'pause' : 'play_arrow'}</Icon>}>{playing ? 'Pause' : 'Play'}</Button>
+        </FormControl>
+
+        <Box fontFamily="Monospace">
+          <TextField value={state.signature}
+                     label="Рисунок" margin="normal" fullWidth fontFamily="Monospace"
+                     onChange={onSignatureChangeHandler}/>&nbsp;
+        </Box>
+      </Grid>
+
+      <Grid item xs={12}>
         <div className={cn.table}>
           <div className={cn.header}>
             <div className={cn.annotation}></div>
@@ -105,55 +160,21 @@ const App = () => {
             <div className={`${cn.row} ${rowIndex === activeRowIndex ? cn.active : ''}`} key={rowIndex}>
               <div className={cn.annotation}>{rowIndex + 1}</div>
               {row.map((item, cellIndex) => (
-                <div key={cellIndex} className={`${item ? cn.active : cn.inactive} ${cn.cell}`}>
+                <div key={cellIndex}
+                     className={`${item ? cn.active : ''} ${cn.cell}`}>
                   <div
+                    className={cn.inner}
                     data-row-index={rowIndex}
                     data-cell-index={cellIndex}
-                    className={cn.inner}
-                    onClick={onCellClickHandler}/>
+                    onClick={onCellClickHandler}
+                  />
                 </div>
               ))}
             </div>
           ))}
         </div>
-      </div>
-      <div>
-        <div className={cn.input}>
-          <div>Размер</div>
-          <div>
-            <input type="text" value={state.track.length} onChange={onLengthChangeHandler}/>
-          </div>
-        </div>
-        <div className={cn.input}>
-          <div>Темп</div>
-          <div>
-            <input type="text" value={temp} onChange={onTempChangeHandler}/>
-            <button onClick={onDoubleTempHandler}>x2</button>
-            <button onClick={onHalfTempHandler}>/2</button>
-          </div>
-        </div>
-        <div className={cn.input}>
-          <div>Рисунок</div>
-          <div>
-            <input type="text" value={state.signature} onChange={onSignatureChangeHandler}/>
-          </div>
-        </div>
-
-        <div>Инструмент</div>
-        <select className={cn.input} name="select" value={instrument} onChange={onInstrumentChangeHandler}>
-          {Object.keys(audios).map((name) => (
-            <option key={name} value={name}>
-              {name}
-            </option>
-          ))}
-        </select>
-
-        <div className={cn.button}>
-          <button onClick={onPlayClick}>Play</button>
-          <button onClick={onStopClick}>Pause</button>
-        </div>
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   )
 }
 
