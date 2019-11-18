@@ -1,42 +1,104 @@
 import { audios } from './audios'
 
-export const initialState = {
-  playRow: 0,
-  track: Array(8)
-    .fill(null)
-    .map((item) => Array(3).fill(false)),
-}
+const query = decodeURI(window.location.search.substr(1))
+
+export const initialState =
+  !query ?
+    {
+      playRow: 0,
+      signature: '--------',
+      track: Array(8)
+        .fill(null)
+        .map((item) => Array(3).fill(false)),
+    } :
+    {
+      playRow: 0,
+      signature: query,
+      track: signatureToTrack(query),
+    }
 
 const onLengthChange = (state, action) => {
   const { length } = action.payload
+  const newTrack = Array(length)
+    .fill(null)
+    .map((item, index) => {
+      return state.track[index] || Array(3).fill(false)
+    })
 
   return {
     ...state,
-    track: Array(length)
-      .fill(null)
-      .map((item, index) => {
-        return state.track[index] || Array(3).fill(false)
-      }),
+    track: newTrack,
+    signature: trackToSignature(newTrack),
   }
 }
 
-const onCeilClick = (state, action) => {
-  const { rowIndex, ceilIndex } = action.payload
+function trackToSignature(track) {
+  let signature = ''
+  track.forEach(function(row) {
+    if (row[0]) signature += 'B'
+    else if (row[1]) signature += 't'
+    else if (row[2]) signature += 'S'
+    else signature += '-'
+  })
+  return signature
+}
+
+function signatureToTrack(signature) {
+  const normalizedSignature = signature.toLowerCase().replace(/\s/g, '')
+  return Array(normalizedSignature.length)
+    .fill(null)
+    .map((item, index) => {
+      const row = Array(3).fill(false)
+      switch (normalizedSignature[index]) {
+        case 'b':
+          row[0] = true
+          break
+        case 't':
+          row[1] = true
+          break
+        case 's':
+          row[2] = true
+          break
+        default:
+          break
+      }
+      return row
+    })
+}
+
+const onSignatureChange = (state, action) => {
+  const signature = action.payload.signature.value
+
+  const newTrack = signatureToTrack(signature)
 
   return {
     ...state,
-    track: state.track.map((item, index) => {
-      return rowIndex !== index
-        ? item
-        : item.map((item, index) => {
-            return index !== ceilIndex ? false : !item
-          })
-    }),
+    signature: signature,
+    track: newTrack,
+  }
+}
+
+const onCellClick = (state, action) => {
+  const { rowIndex, cellIndex } = action.payload
+
+  const newTrack = state.track.map((item, index) => {
+    return rowIndex !== index
+      ? item
+      : item.map((item, index) => {
+        return index !== cellIndex ? false : !item
+      })
+  })
+
+  return {
+    ...state,
+    track: newTrack,
+    signature: trackToSignature(newTrack),
   }
 }
 
 const onPlayNext = (state, action) => {
   const { playRow, track } = state
+  const { instrument } = action.payload
 
   if (!track.length) return { ...state, playRow: 0 }
 
@@ -47,11 +109,12 @@ const onPlayNext = (state, action) => {
   //   audio.currentTime = 0
   // })
 
-  const ceilIndex = track[realPlayRow].findIndex((item) => item)
+  const cellIndex = track[realPlayRow].findIndex((item) => item)
 
-  if (ceilIndex > -1) {
-    audios[ceilIndex].currentTime = 0
-    audios[ceilIndex].play()
+  if (cellIndex > -1) {
+    let audio = audios[instrument][cellIndex]
+    audio.currentTime = 0
+    audio.play()
   }
 
   return {
@@ -62,8 +125,9 @@ const onPlayNext = (state, action) => {
 
 const MAP = {
   onLengthChange,
-  onCeilClick,
+  onCellClick,
   onPlayNext,
+  onSignatureChange,
 }
 
 export const reducer = (state, action) => {
@@ -77,15 +141,24 @@ export const onLengthChangeAction = (length) => ({
   },
 })
 
-export const onCeilClickAction = ({ rowIndex, ceilIndex }) => ({
-  type: 'onCeilClick',
+export const onSignatureChangeAction = (signature) => ({
+  type: 'onSignatureChange',
   payload: {
-    rowIndex,
-    ceilIndex,
+    signature,
   },
 })
 
-export const onPlayNextAction = () => ({
+export const onCellClickAction = ({ rowIndex, cellIndex }) => ({
+  type: 'onCellClick',
+  payload: {
+    rowIndex,
+    cellIndex,
+  },
+})
+
+export const onPlayNextAction = (instrument) => ({
   type: 'onPlayNext',
-  payload: {},
+  payload: {
+    instrument,
+  },
 })

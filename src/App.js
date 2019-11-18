@@ -1,13 +1,15 @@
 import React, { useCallback, useReducer, useState, useEffect, useMemo } from 'react'
-import { reducer, initialState, onLengthChangeAction, onCeilClickAction } from './reducer'
+import { reducer, initialState, onLengthChangeAction, onCellClickAction, onSignatureChangeAction } from './reducer'
 import { onPlayNextAction } from './reducer'
 
 import cn from './App.module.scss'
+import { audios } from './audios'
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [playing, setPlaying] = useState(false)
   const [temp, setTemp] = useState(150)
+  const [instrument, setInstrument] = useState(Object.keys(audios)[0])
 
   const onTempChangeHandler = useCallback((event) => {
     const value = +event.target.value
@@ -15,16 +17,38 @@ const App = () => {
     setTemp(Math.round(value))
   }, [])
 
+  const onInstrumentChangeHandler = useCallback((event) => {
+    const value = event.target.value
+    setInstrument(value)
+  }, [])
+
+  const onSignatureChangeHandler = useCallback((event) => {
+    const value = event.target.value
+    dispatch(onSignatureChangeAction({ value }))
+  }, [])
+
+  const onDoubleTempHandler = useCallback((event) => {
+    const value = temp * 2
+    if (Number.isNaN(value) || value < 0) return
+    setTemp(Math.round(value))
+  }, [temp])
+
+  const onHalfTempHandler = useCallback((event) => {
+    const value = temp / 2
+    if (Number.isNaN(value) || value < 0) return
+    setTemp(Math.round(value))
+  }, [temp])
+
   const onLengthChangeHandler = useCallback((event) => {
     const value = +event.target.value
     if (Number.isNaN(value) || value < 0) return
     dispatch(onLengthChangeAction(Math.round(value)))
   }, [])
 
-  const onCeilClickHandler = useCallback((event) => {
+  const onCellClickHandler = useCallback((event) => {
     const rowIndex = +event.target.getAttribute('data-row-index')
-    const ceilIndex = +event.target.getAttribute('data-ceil-index')
-    dispatch(onCeilClickAction({ rowIndex, ceilIndex }))
+    const cellIndex = +event.target.getAttribute('data-cell-index')
+    dispatch(onCellClickAction({ rowIndex, cellIndex }))
   }, [])
 
   const onPlayClick = useCallback(() => {
@@ -43,10 +67,10 @@ const App = () => {
   useEffect(() => {
     if (!playing) return
     const intervalId = setInterval(() => {
-      dispatch(onPlayNextAction())
+      dispatch(onPlayNextAction(instrument))
     }, 60000 / temp)
     return () => clearInterval(intervalId)
-  }, [temp, playing])
+  }, [temp, playing, instrument])
 
   return (
     <div className={cn.root}>
@@ -61,13 +85,13 @@ const App = () => {
           {state.track.map((row, rowIndex) => (
             <div className={`${cn.row} ${rowIndex === activeRowIndex ? cn.active : ''}`} key={rowIndex}>
               <div className={cn.anotation}>{rowIndex + 1}</div>
-              {row.map((item, ceilIndex) => (
+              {row.map((item, cellIndex) => (
                 <div
                   data-row-index={rowIndex}
-                  data-ceil-index={ceilIndex}
-                  key={ceilIndex}
-                  className={`${item ? cn.active : ''} ${cn.ceil}`}
-                  onClick={onCeilClickHandler}
+                  data-cell-index={cellIndex}
+                  key={cellIndex}
+                  className={`${item ? cn.active : ''} ${cn.cell}`}
+                  onClick={onCellClickHandler}
                 ></div>
               ))}
             </div>
@@ -78,15 +102,31 @@ const App = () => {
         <div className={cn.input}>
           <div>Размер</div>
           <div>
-            <input type="text" value={`${state.track.length}`} onChange={onLengthChangeHandler} />
+            <input type="text" value={state.track.length} onChange={onLengthChangeHandler}/>
           </div>
         </div>
         <div className={cn.input}>
           <div>Темп</div>
           <div>
-            <input type="text" value={`${temp}`} onChange={onTempChangeHandler} />
+            <input type="text" value={temp} onChange={onTempChangeHandler}/>
+            <button onClick={onDoubleTempHandler}>x2</button>
+            <button onClick={onHalfTempHandler}>/2</button>
           </div>
         </div>
+        <div className={cn.input}>
+          <div>Рисунок</div>
+          <div>
+            <input type="text" value={state.signature} onChange={onSignatureChangeHandler}/>
+          </div>
+        </div>
+
+        <div>Инструмент</div>
+        <select  className={cn.input} name="select" value={instrument} onChange={onInstrumentChangeHandler}>
+          {Object.keys(audios).map(name => {
+            return (<option key={name} value={name}>{name}</option>)
+          })}
+        </select>
+
         <div className={cn.button}>
           <button onClick={onPlayClick}>Play</button>
           <button onClick={onStopClick}>Pause</button>

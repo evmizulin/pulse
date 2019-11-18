@@ -1,1 +1,6 @@
 # pulse
+
+```
+npm install
+
+```
