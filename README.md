@@ -15,6 +15,6 @@ Then use `npm start` to start local server and open `localhost:3000` in your bro
 ## Deployment
 
 Branch `master` is automatically deployed to GitHub page, 
-but it doesn't build automatically. So you need to run `npm build` 
+but it doesn't build automatically. So you need to run `npm run build` 
 locally and commit built files to repository along with your changes. 
 

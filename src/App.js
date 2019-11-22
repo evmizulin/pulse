@@ -13,6 +13,7 @@ import { audios } from './audios'
 
 // These two lines are required for Safari to cache audio and play it without a lag
 const audioContextClass = window.AudioContext || window.webkitAudioContext
+// eslint-disable-next-line 
 const audioContext = audioContextClass ? new audioContextClass() : null
 
 const App = () => {
@@ -71,7 +72,7 @@ const App = () => {
     })
 
     setPlaying(true)
-  }, [])
+  }, [instrument])
 
   const onStopClick = useCallback(() => {
     setPlaying(false)
