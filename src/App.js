@@ -1,28 +1,29 @@
-import React, { useCallback, useReducer, useState, useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import {
-  Grid,
+  Box,
   Button,
   Fab,
-  Icon,
-  TextField,
-  Box,
-  InputLabel,
-  InputAdornment,
   FormControl,
+  Grid,
+  Icon,
+  InputAdornment,
+  InputLabel,
   Select,
+  TextField,
 } from '@material-ui/core'
 
 import {
-  reducer,
   initialState,
-  onLengthChangeAction,
   onCellClickAction,
+  onLengthChangeAction,
+  onPlayNextAction,
   onSignatureChangeAction,
+  reducer,
 } from './reducer'
-import { onPlayNextAction } from './reducer'
 
 import cn from './App.module.scss'
 import { audios } from './audios'
+import { Track } from './Track'
 
 // These two lines are required for Safari to cache audio and play it without a lag
 const audioContextClass = window.AudioContext || window.webkitAudioContext
@@ -73,7 +74,7 @@ const App = () => {
     const cellIndex = +event.target.getAttribute('data-cell-index')
     dispatch(onCellClickAction({ rowIndex, cellIndex }))
   }, [])
-  
+
   const onTogglePlayClick = useCallback(() => {
     // This is "play audio when user clicked" workaround to enable playing of particular
     // Audio instances and being able to play them out of click context. Still buggy.
@@ -85,7 +86,7 @@ const App = () => {
     })
     setPlaying(!playing)
   }, [playing, instrument])
-  
+
   const activeRowIndex = useMemo(() => {
     if (!playing) return null
     return state.playRow === 0 ? state.track.length - 1 : state.playRow - 1
@@ -108,7 +109,6 @@ const App = () => {
 
   return (
     <Grid container component="main" className={cn.root} spacing={2}>
-
       <Grid item xs={12}>
         <TextField value={state.track.length}
                    label="Размер" margin="normal" variant="outlined" style={{ width: '5rem' }}
@@ -149,30 +149,10 @@ const App = () => {
       </Grid>
 
       <Grid item xs={12}>
-        <div className={cn.table}>
-          <div className={cn.header}>
-            <div className={cn.annotation}></div>
-            <div className={cn.annotation}>B</div>
-            <div className={cn.annotation}>t</div>
-            <div className={cn.annotation}>S</div>
-          </div>
-          {state.track.map((row, rowIndex) => (
-            <div className={`${cn.row} ${rowIndex === activeRowIndex ? cn.active : ''}`} key={rowIndex}>
-              <div className={cn.annotation}>{rowIndex + 1}</div>
-              {row.map((item, cellIndex) => (
-                <div key={cellIndex}
-                     className={`${item ? cn.active : ''} ${cn.cell}`}>
-                  <div
-                    className={cn.inner}
-                    data-row-index={rowIndex}
-                    data-cell-index={cellIndex}
-                    onClick={onCellClickHandler}
-                  />
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
+        <Track track={state.track}
+               onCellClick={onCellClickHandler}
+               activeRowIndex={activeRowIndex}
+        />
       </Grid>
     </Grid>
   )
