@@ -27,7 +27,7 @@ import { Track } from './Track'
 
 // These two lines are required for Safari to cache audio and play it without a lag
 const audioContextClass = window.AudioContext || window.webkitAudioContext
-// eslint-disable-next-line 
+// eslint-disable-next-line
 const audioContext = audioContextClass ? new audioContextClass() : null
 
 const App = () => {
@@ -60,7 +60,7 @@ const App = () => {
     (event) => {
       setTemp(temp / 2)
     },
-    [temp],
+    [temp]
   )
 
   const onLengthChangeHandler = useCallback((event) => {
@@ -78,7 +78,7 @@ const App = () => {
   const onTogglePlayClick = useCallback(() => {
     // This is "play audio when user clicked" workaround to enable playing of particular
     // Audio instances and being able to play them out of click context. Still buggy.
-    audios[instrument].forEach(audio => {
+    audios[instrument].forEach((audio) => {
       audio.volume = 0
       audio.load()
       audio.play()
@@ -110,49 +110,90 @@ const App = () => {
   return (
     <Grid container component="main" className={cn.root} spacing={2}>
       <Grid item xs={12}>
-        <TextField value={state.track.length}
-                   label="Размер" margin="normal" variant="outlined" style={{ width: '5rem' }}
-                   onChange={onLengthChangeHandler}/>&nbsp;
-        <TextField value={temp}
-                   label="Темп" margin="normal" variant="outlined" style={{ width: '10rem' }}
-                   InputProps={{
-                     endAdornment: <InputAdornment position="end">
-                       <Fab style={{ maxWidth: '2rem', maxHeight: '2rem', minWidth: '2rem', minHeight: '2rem' }}
-                            onClick={onDoubleTempHandler}>x2</Fab>
-                       <Fab style={{ maxWidth: '2rem', maxHeight: '2rem', minWidth: '2rem', minHeight: '2rem' }}
-                            onClick={onHalfTempHandler}>/2</Fab>
-                     </InputAdornment>,
-                   }}
-                   onChange={onTempChangeHandler}/>&nbsp;
+        <TextField
+          value={state.track.length}
+          label="Размер"
+          margin="normal"
+          variant="outlined"
+          style={{ width: '5rem' }}
+          onChange={onLengthChangeHandler}
+        />
+        &nbsp;
+        <TextField
+          value={temp}
+          label="Темп"
+          margin="normal"
+          variant="outlined"
+          style={{ width: '10rem' }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <Fab
+                  style={{ maxWidth: '2rem', maxHeight: '2rem', minWidth: '2rem', minHeight: '2rem' }}
+                  onClick={onDoubleTempHandler}
+                >
+                  x2
+                </Fab>
+                <Fab
+                  style={{ maxWidth: '2rem', maxHeight: '2rem', minWidth: '2rem', minHeight: '2rem' }}
+                  onClick={onHalfTempHandler}
+                >
+                  /2
+                </Fab>
+              </InputAdornment>
+            ),
+          }}
+          onChange={onTempChangeHandler}
+        />
+        &nbsp;
         <FormControl margin="normal" variant="outlined" style={{ width: '10rem' }}>
-          <InputLabel ref={inputLabel} htmlFor="instrument-select">Инструмент</InputLabel>
-          <Select value={instrument} native labelWidth={labelWidth}
-                  onChange={onInstrumentChangeHandler}
-                  inputProps={{
-                    id: 'instrument-select',
-                  }}>
-            {Object.keys(audios).map(name => {
-              return (<option key={name} value={name}>{name}</option>)
+          <InputLabel ref={inputLabel} htmlFor="instrument-select">
+            Инструмент
+          </InputLabel>
+          <Select
+            value={instrument}
+            native
+            labelWidth={labelWidth}
+            onChange={onInstrumentChangeHandler}
+            inputProps={{
+              id: 'instrument-select',
+            }}
+          >
+            {Object.keys(audios).map((name) => {
+              return (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              )
             })}
           </Select>
-        </FormControl>&nbsp;
-        <FormControl margin="normal" variant="outlined">
-          <Button variant="contained" size="large" onClick={onTogglePlayClick}
-                  endIcon={<Icon>{playing ? 'pause' : 'play_arrow'}</Icon>}>{playing ? 'Pause' : 'Play'}</Button>
         </FormControl>
-
+        &nbsp;
+        <FormControl margin="normal" variant="outlined">
+          <Button
+            variant="contained"
+            size="large"
+            onClick={onTogglePlayClick}
+            endIcon={<Icon>{playing ? 'pause' : 'play_arrow'}</Icon>}
+          >
+            {playing ? 'Pause' : 'Play'}
+          </Button>
+        </FormControl>
         <Box fontFamily="Monospace">
-          <TextField value={state.signature}
-                     label="Рисунок" margin="normal" fullWidth fontFamily="Monospace"
-                     onChange={onSignatureChangeHandler}/>&nbsp;
+          <TextField
+            value={state.signature}
+            label="Рисунок"
+            margin="normal"
+            fullWidth
+            fontFamily="Monospace"
+            onChange={onSignatureChangeHandler}
+          />
+          &nbsp;
         </Box>
       </Grid>
 
       <Grid item xs={12}>
-        <Track track={state.track}
-               onCellClick={onCellClickHandler}
-               activeRowIndex={activeRowIndex}
-        />
+        <Track track={state.track} onCellClick={onCellClickHandler} activeRowIndex={activeRowIndex} />
       </Grid>
     </Grid>
   )
