@@ -31,7 +31,7 @@ const audioContextClass = window.AudioContext || window.webkitAudioContext
 const audioContext = audioContextClass ? new audioContextClass() : null
 
 // eslint-disable-next-line
-console.log('Test auto build')
+console.log('Test auto build - 2')
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
