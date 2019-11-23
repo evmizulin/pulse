@@ -27,7 +27,7 @@ jobs:
         npm run build
       env:
         CI: true
-    - name: Commit files
+    - name: Commit files if there are something to commit
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
